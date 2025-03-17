@@ -1,3 +1,5 @@
+//test comment
+
 const http = require("http");
 var StringDecoder = require("string_decoder").StringDecoder;
 
@@ -20,8 +22,8 @@ const getBody = (req, callback) => {
   });
 };
 
-let randomNumber = Math.floor(Math.random() * 100) + 1 ;
-let message = "Guess a number between 1 and 100"
+let randomNumber = Math.floor(Math.random() * 100) + 1;
+let message = "Guess a number between 1 and 100";
 
 // here, you could declare one or more variables to store what comes back from the form.
 let item = "Enter something below.";
@@ -56,7 +58,7 @@ const server = http.createServer((req, res) => {
         } else {
           message = "Correct! ";
           randomNumber = Math.floor(Math.random() * 100) + 1;
-        }  
+        }
       }
       // Your code changes would end here
       res.writeHead(303, {
@@ -68,6 +70,10 @@ const server = http.createServer((req, res) => {
     res.end(form());
   }
 });
+
+server.on("request", (req) => {
+  console.log("event received: ", req.method, req.url);
+}); 
 
 server.listen(3000);
 console.log("The server is listening on port 3000.");
