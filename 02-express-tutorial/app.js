@@ -3,30 +3,18 @@ const app = express();
 const { products, people } = require("./data");
 const morgan = require("morgan");
 const authorize = require("./authorize");
+const peopleRouter = require("./routes/people");
 
 app.use(express.static("./methods-public"));
 app.use(morgan("tiny"));
 
 // Middleware to parse URL-encoded and JSON bodies
-app.use(express.urlencoded({ extended: false })); // For parsing application/x-www-form-urlencoded
-app.use(express.json()); // For parsing application/json
-
-// The route to get people
-app.get("/api/v1/people", (req, res) => {
-  res.status(200).json({success:true, data: people})
-});
+app.use(express.urlencoded({ extended: false })); // For parsing form data
+app.use(express.json()); // For parsing json
 
 
-// The route to add a new person
-app.post("/api/v1/people", (req, res) => {
-  const { name } = req.body;
-  if (!name) {
-    res.status(400).json({ success: false, message: "Please provide a name" }); 
-  }
-  
- people.push({ id: people.length + 1, name: req.body.name });
-res.status(201).json({ success: true, name: req.body.name }); 
-});
+//peopleRouter for /api/v1/people route
+app.use("/api/v1/people", peopleRouter);
 
 
 app.get("/", (req, res) => {
@@ -36,6 +24,7 @@ app.get("/", (req, res) => {
 app.get("/about", (req, res) => {
   res.send("About");
 });
+
 app.get("/api/products", (req, res) => {
   res.send("Products");
 });
