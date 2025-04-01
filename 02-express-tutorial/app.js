@@ -1,5 +1,7 @@
 const express = require("express");
 const app = express();
+const cookieParser = require("cookie-parser"); 
+
 const { products, people } = require("./data");
 const morgan = require("morgan");
 const authorize = require("./authorize");
@@ -7,6 +9,7 @@ const peopleRouter = require("./routes/people");
 
 app.use(express.static("./methods-public"));
 app.use(morgan("tiny"));
+app.use(cookieParser()); 
 
 // Middleware to parse URL-encoded and JSON bodies
 app.use(express.urlencoded({ extended: false })); // For parsing form data
@@ -15,6 +18,41 @@ app.use(express.json()); // For parsing json
 
 //peopleRouter for /api/v1/people route
 app.use("/api/v1/people", peopleRouter);
+
+
+function auth(req, res, next) {
+  if (req.cookies.name) {
+    req.user = req.cookies.name;
+    return next();
+  } else {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+}
+
+// Logon endpoint (POST)
+app.post('/logon', (req, res) => {
+  const { name } = req.body; // Get the name from the request body
+
+  if (name) {
+    // Set the 'name' cookie with the value from request body
+    res.cookie('name', name);
+    res.status(201).json({ message: `Hello, ${name}!` });
+  } else {
+    res.status(400).json({ error: 'Name is required' });
+  }
+});
+
+// Logoff endpoint (DELETE)
+app.delete('/logoff', (req, res) => {
+  res.clearCookie('name');
+  res.status(200).json({ message: 'Logged off successfully' });
+});
+
+// Test endpoint (GET) - requires authentication
+app.get('/test', auth, (req, res) => {
+  // This will only be reached if the auth middleware sets req.user
+  res.status(200).json({ message: `Welcome, ${req.user}!` });
+});
 
 
 app.get("/", (req, res) => {
