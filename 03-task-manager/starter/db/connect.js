@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
 
-const connectionString =
-  "mongodb+srv://nihal:<db_password>@nodeexpressprojects.wsbobwd.mongodb.net/03-TASK-MANAGER?retryWrites=true&w=majority&appName=NodeExpressProjects";
-
 const connectDB = (url) => {
-  mongoose.connect(connectionString);
+ return mongoose.connect(url, {
+   useNewUrlParser: true,
+   useUnifiedTopology: true,
+ });
 };
 
 module.exports = connectDB
