@@ -12,18 +12,16 @@ const login = async (req, res) => {
   //normally provided by DB!!! just for the practice
   const id = new Date().getDate();
 
-  const token = jwt.sign({ id, username }, process.env.JWT_SECRET, {
-    expiresIn: "30d",
+  const token = jwt.sign({ username }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_LIFETIME,
   });
   res.status(200).json({ msg: "user created", token });
 };
 
-const dashboard = async (req, res) => {
-  const luckyNumber = Math.floor(Math.random() * 100);
+const hello = async (req, res) => {
   res.status(200).json({
-    msg: `Hello, ${req.user.username}`,
-    secret: `Here is your authorized data, your lucky number is ${luckyNumber}`,
+    message: `Hello, ${req.user.username}. Welcome to the secret area!`,
   });
 };
 
-module.exports = { login, dashboard };
+module.exports = { login, hello };
