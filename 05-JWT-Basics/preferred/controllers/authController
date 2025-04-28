@@ -1,0 +1,27 @@
+const jwt = require("jsonwebtoken");
+
+const login = async (req, res) => {
+  const { username, password } = req.body;
+  console.log(username, password);
+
+  //Basic validation
+  if (!username || !password) {
+    return res.status(400).json({ msg: "Please provide email and password" });
+  }
+
+  //normally provided by DB!!! just for the practice
+  const id = new Date().getDate();
+
+  const token = jwt.sign({ username }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_LIFETIME,
+  });
+  res.status(200).json({ msg: "user created", token });
+};
+
+const hello = async (req, res) => {
+  res.status(200).json({
+    message: `Hello, ${req.user.username}. Welcome to the secret area!`,
+  });
+};
+
+module.exports = { login, hello };
